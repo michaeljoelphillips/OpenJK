@@ -375,6 +375,9 @@ if(BuildSPEngine OR BuildJK2SPEngine)
     list(APPEND SPEngineIncludeDirectories ${ZLIB_INCLUDE_DIR})
     list(APPEND SPEngineLibraries          ${ZLIB_LIBRARIES})
 
+    list(APPEND SPEngineIncludeDirectories ${IRCCLIENT_INCLUDE_DIRS})
+    list(APPEND SPEngineLibraries          ${IRCCLIENT_LIBRARIES})
+
 	# project macro so we can invoke it twice: for jk2 and for ja
 	function(add_sp_project ProjectName Label SPDirName InstallDir Component)
 		if(MakeApplicationBundles)
