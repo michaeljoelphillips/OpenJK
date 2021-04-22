@@ -880,6 +880,8 @@ void CL_Frame ( int msec,float fractionMsec ) {
 
 	Con_RunConsole();
 
+	CL_IRCRecv();
+
 	cls.framecount++;
 }
 
@@ -952,6 +954,12 @@ void CL_StartHunkUsers( void ) {
 	if ( !com_cl_running->integer ) {
 		return;
 	}
+
+	if ( !cls.ircStarted )
+  {
+    cls.ircStarted = qtrue;
+    CL_InitIRC();
+  }
 
 	if ( !cls.rendererStarted ) {
 		cls.rendererStarted = qtrue;
@@ -1313,6 +1321,8 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("uimenu", CL_GenericMenu_f);
 	Cmd_AddCommand ("datapad", CL_DataPad_f);
 	Cmd_AddCommand ("endscreendissolve", CL_EndScreenDissolve_f);
+  Cmd_AddCommand ("say", CL_IRCSay);
+  Cmd_AddCommand ("join", CL_IRCJoin);
 
 	CL_InitRef();
 

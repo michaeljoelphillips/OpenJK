@@ -189,6 +189,7 @@ typedef struct {
 	qboolean	soundRegistered;
 	qboolean	uiStarted;
 	qboolean	cgameStarted;
+	qboolean	ircStarted;
 
 	int			framecount;
 	int			frametime;			// msec since last frame
@@ -408,6 +409,13 @@ void CL_CGameRendering( stereoFrame_t stereo );
 void CL_SetCGameTime( void );
 void CL_FirstSnapshot( void );
 
+//
+// cl_irc.c
+//
+void CL_InitIRC( void );
+void CL_IRCJoin( void );
+void CL_IRCRecv( void );
+void CL_IRCSay( void );
 
 //
 // cl_ui.c

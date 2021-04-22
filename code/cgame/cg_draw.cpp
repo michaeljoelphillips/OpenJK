@@ -2505,6 +2505,12 @@ void CG_DrawHealthBars( void )
 	}
 }
 
+void CG_DrawChat( void )
+{
+  // 640 x 480
+	CG_DrawRect(295.0f, 5.0f, 100.0f, 50.0f, 1.0f, colorTable[CT_YELLOW]);
+}
+
 #define HEALTHBARRANGE 422
 void CG_AddHealthBarEnt( int entNum )
 {
@@ -3912,6 +3918,8 @@ static void CG_Draw2D( void )
 	char	text[1024]={0};
 	int		w,y_pos;
 	centity_t *cent = &cg_entities[cg.snap->ps.clientNum];
+
+	CG_DrawChat();
 
 	// if we are taking a levelshot for the menu, don't draw anything
 	if ( cg.levelShot )

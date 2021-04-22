@@ -111,6 +111,7 @@ if(BuildSPEngine OR BuildJK2SPEngine)
 		"${SPDir}/client/cl_cin.cpp"
 		"${SPDir}/client/cl_console.cpp"
 		"${SPDir}/client/cl_input.cpp"
+		"${SPDir}/client/cl_irc.cpp"
 		"${SPDir}/client/cl_keys.cpp"
 		"${SPDir}/client/cl_main.cpp"
 		"${SPDir}/client/cl_mp3.cpp"
