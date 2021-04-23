@@ -11,6 +11,7 @@
 
 int channel_joined = 0;
 irc_session_t *session;
+irc_callbacks_t *callbacks = (irc_callbacks_t*) malloc(sizeof(irc_callbacks_t));
 
 char *current_channel = (char*) malloc(40 * sizeof(char));
 
@@ -50,8 +51,6 @@ void CL_InitIRC( void )
   cvar_t *cl_ircPort = Cvar_Get("cl_ircPort", "6667", CVAR_ARCHIVE_ND);
   cvar_t *cl_ircUsername = Cvar_Get("cl_ircUsername", "justinfan14970", CVAR_ARCHIVE_ND);
   cvar_t *cl_ircPassword = Cvar_Get("cl_ircPassword", "kappa", CVAR_ARCHIVE_ND);
-
-  irc_callbacks_t *callbacks = (irc_callbacks_t*) malloc(sizeof(irc_callbacks_t));
 
   callbacks->event_join    = join;
   callbacks->event_part    = part;
