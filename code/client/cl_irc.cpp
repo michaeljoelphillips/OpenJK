@@ -40,13 +40,13 @@ void CL_InitIRC( void )
   cvar_t *cl_ircUsername = Cvar_Get("cl_ircUsername", "justinfan14970", CVAR_ARCHIVE_ND);
   cvar_t *cl_ircPassword = Cvar_Get("cl_ircPassword", "kappa", CVAR_ARCHIVE_ND);
 
-  irc_callbacks_t callbacks = {
-    .event_join    = join,
-    .event_part    = part,
-    .event_channel = channel,
-  };
+  irc_callbacks_t *callbacks = (irc_callbacks_t*) malloc(sizeof(irc_callbacks_t));
 
-  session = irc_create_session(&callbacks);
+  callbacks->event_join    = join;
+  callbacks->event_part    = part;
+  callbacks->event_channel = channel;
+
+  session = irc_create_session(callbacks);
 
   if (!session) {
     Com_Printf("Failed to create the IRC session\n");
