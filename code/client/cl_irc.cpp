@@ -1,11 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <libircclient/libircclient.h>
 
-#ifdef USE_INTERNAL_IRCCLIENT
-#include "ircclient/libircclient.h"
-#else
-#include <libircclient.h>
-#endif
 
 #include "client.h"
 #include "qcommon/qcommon.h"

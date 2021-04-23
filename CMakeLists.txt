@@ -63,7 +63,6 @@ set(UseInternalZlibDefault        OFF)
 set(UseInternalPNGDefault         OFF)
 set(UseInternalJPEGDefault        OFF)
 set(UseInternalSDL2Default        OFF)
-set(UseInternalIRCCLIENTDefault   OFF)
 
 if(WIN32)
   set(UseInternalOpenALDefault      ON)
@@ -71,11 +70,10 @@ if(WIN32)
   set(UseInternalPNGDefault         ON)
   set(UseInternalJPEGDefault        ON)
   set(UseInternalSDL2Default        ON)
-  set(UseInternalIRCCLIENTDefault   ON)
 endif()
 
 if(APPLE)
-  set(UseInternalJPEGDefault ON)
+  set(UseInternalJPEGDefault      ON)
 endif()
 
 option(UseInternalOpenAL      "If set, use bundled OpenAL."       ${UseInternalOpenALDefault})
@@ -83,7 +81,6 @@ option(UseInternalZlib        "If set, use bundled zlib."         ${UseInternalZ
 option(UseInternalPNG         "If set, use bundled libpng."       ${UseInternalPNGDefault})
 option(UseInternalJPEG        "If set, use bundled libjpeg."      ${UseInternalJPEGDefault})
 option(UseInternalSDL2        "If set, use bundled SDL2."         ${UseInternalSDL2Default})
-option(UseInternalIRCCLIENT   "If set, use bundled libircclient." ${UseInternalIRCCLIENTDefault})
 
 # This option won't appear on non-Apple platforms.
 if(APPLE)
@@ -371,14 +368,11 @@ else()
   find_package(PNG REQUIRED)
 endif()
 
-if(UseInternalIRCCLIENT)
-  add_subdirectory(lib/ircclient)
-else()
-  find_package(IRCCLIENT REQUIRED)
-endif()
-
 # Always use bundled minizip (sets MINIZIP_{LIBRARIES,INCLUDE_DIR})
 add_subdirectory(lib/minizip)
+
+# Always use bundled libircclient
+add_subdirectory(lib/libircclient)
 
 # Add projects
 add_subdirectory(${SPDir})
