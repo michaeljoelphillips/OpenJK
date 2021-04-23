@@ -79,6 +79,11 @@ cvar_t	*cl_inGameVideo;
 cvar_t	*cl_consoleKeys;
 cvar_t	*cl_consoleUseScanCode;
 
+cvar_t	*cl_ircHost;
+cvar_t	*cl_ircPort;
+cvar_t	*cl_ircUsername;
+cvar_t	*cl_ircPassword;
+
 clientActive_t		cl;
 clientConnection_t	clc;
 clientStatic_t		cls;

@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <libircclient.h>
-#include <libirc_rfcnumeric.h>
 
 #ifdef USE_INTERNAL_IRCCLIENT
 #include "ircclient/libircclient.h"
@@ -12,26 +10,70 @@
 #include "client.h"
 #include "qcommon/qcommon.h"
 
-#define IRC_COMMAND_CHAR = "!";
-
 int channel_joined = 0;
-
-// @todo: Buffer overflow?
-char *current_channel = (char*) malloc(40);
 irc_session_t *session;
-irc_callbacks_t callbacks;
 
-void connect(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
+char *current_channel = (char*) malloc(40 * sizeof(char));
+
+void join(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
+void part(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
+void channel(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
+
+/*
+======================
+ Initialize the IRC Client
+
+ Connection information for the IRC server is stored and read as cvars.  The
+ cvars for connecting are as follows:
+
+   cl_ircHost
+   cl_ircPort
+   cl_ircUsername
+   cl_ircPassword
+
+ If custom cvars are not provided, the client will connect to
+ "irc.chat.twitch.tv" as an anonymous user.
+
+ If the connection fails, the client must be restarted.
+======================
+*/
+void CL_InitIRC( void )
 {
-  Com_Printf("Connected to the IRC Server");
+  cvar_t *cl_ircHost = Cvar_Get("cl_ircHost", "irc.chat.twitch.tv", CVAR_ARCHIVE_ND);
+  cvar_t *cl_ircPort = Cvar_Get("cl_ircPort", "6667", CVAR_ARCHIVE_ND);
+  cvar_t *cl_ircUsername = Cvar_Get("cl_ircUsername", "justinfan14970", CVAR_ARCHIVE_ND);
+  cvar_t *cl_ircPassword = Cvar_Get("cl_ircPassword", "kappa", CVAR_ARCHIVE_ND);
+
+  irc_callbacks_t callbacks = {
+    .event_join    = join,
+    .event_part    = part,
+    .event_channel = channel,
+  };
+
+  session = irc_create_session(&callbacks);
+
+  if (!session) {
+    Com_Printf("Failed to create the IRC session\n");
+
+    return;
+  }
+
+  if (irc_connect(session, cl_ircHost->string, cl_ircPort->integer, cl_ircPassword->string, cl_ircUsername->string, cl_ircUsername->string, NULL)) {
+    Com_Printf("Failed to connect to IRC server %s:%d\n", cl_ircHost->string, cl_ircPort->integer);
+
+    irc_destroy_session(session);
+
+    return;
+  }
 }
 
-void numeric(irc_session_s *session, unsigned int event, const char * origin, const char ** params, unsigned int count)
-{
-  Com_Printf("Captured Event: %d %s\n", event, origin);
-}
+/*
+======================
+ The channel event callback
 
-// @todo: Parse the user string and display only the nick
+ Received when a message is sent to the connected IRC channel
+======================
+*/
 void channel(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
   const char *user = origin;
@@ -41,13 +83,20 @@ void channel(irc_session_t *session, const char *event, const char *origin, cons
     Cmd_ExecuteString(++message);
   }
 
-  Com_Printf("%s: %s\n", user, message);
+  Com_Printf("%s: %s\n", user, --message);
 }
 
+/*
+======================
+ The join event callback
+
+ Received when the current user joins an IRC channel
+======================
+*/
 void join(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
   if (channel_joined) {
-    Com_Printf("Disconnecting from %s\n", current_channel);
+    Com_Printf("Leaving %s\n", current_channel);
 
     if (irc_cmd_part(session, current_channel)) {
       Com_Printf("Failed to leave channel %s\n", current_channel);
@@ -62,46 +111,30 @@ void join(irc_session_t *session, const char *event, const char *origin, const c
   Com_Printf("Joined channel %s\n", params[0]);
 }
 
+
+/*
+======================
+ The part event callback
+
+ Received when the current user parts from (leaves) an IRC channel
+======================
+*/
 void part(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
-  Com_Printf("Parted ways with channel %s\n", params[0]);
+  channel_joined = 0;
+  memset(current_channel, 0, 40 * sizeof(char));
 }
 
-void CL_InitIRC( void )
-{
-  int connect_failed;
+/*
+======================
+ Receive events from the IRC server
 
-  memset(&callbacks, 0, sizeof(irc_callbacks_t));
+ This function checks for incoming async IRC events via select().  It must be
+ run on the game loop in order for IRC messages to be received.
 
-  callbacks.event_connect = connect;
-  callbacks.event_numeric = numeric;
-  callbacks.event_channel = channel;
-  callbacks.event_join    = join;
-  callbacks.event_part    = part;
-
-  session = irc_create_session(&callbacks);
-
-  if (!session) {
-    Com_Printf("Failed to construct the session");
-  }
-
-  connect_failed = irc_connect(session, "irc.chat.twitch.tv", 6667, "oauth:", "", "", NULL);
-
-  Com_Printf("Connection Status: %d", connect_failed);
-
-  if (connect_failed) {
-    Com_Printf("Connection failed: %s\n", irc_strerror(irc_errno(session)));
-
-    irc_destroy_session(session);
-  }
-
-  if (!irc_is_connected(session)) {
-    Com_Printf("The connection was not successful");
-  }
-
-  Com_Printf("Connection Status: %d", connect_failed);
-}
-
+ Refer to libircclient
+======================
+*/
 void CL_IRCRecv( void )
 {
   if (!irc_is_connected(session)) {
@@ -129,23 +162,33 @@ void CL_IRCRecv( void )
   irc_process_select_descriptors(session, &in_set, &out_set);
 }
 
+/*
+======================
+Send messages to the connection IRC channel from the console:
+
+ say PogChamp
+
+======================
+*/
 void CL_IRCSay( void )
 {
-  char *message;
-
   if (Cmd_Argc() < 1) {
     return;
   }
 
-  message = Cmd_ArgsFrom(1);
-
-  irc_cmd_msg(session, current_channel, message);
+  irc_cmd_msg(session, current_channel, Cmd_ArgsFrom(1));
 }
 
+/*
+======================
+Join an IRC channel from the console:
+
+ join #your_solution
+
+======================
+*/
 void CL_IRCJoin( void )
 {
-  char *channel;
-
   if (Cmd_Argc() < 1) {
     return;
   }
@@ -156,6 +199,5 @@ void CL_IRCJoin( void )
     return;
   }
 
-  channel = Cmd_ArgsFrom(1);
-  irc_cmd_join(session, channel, NULL);
+  irc_cmd_join(session, Cmd_ArgsFrom(1), NULL);
 }
