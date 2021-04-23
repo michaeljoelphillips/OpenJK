@@ -3,6 +3,8 @@
 #include <libircclient/libircclient.h>
 
 #ifdef _WIN32
+  #include <winsock.h>
+
   static WSADATA winsockdata;
 #endif
 
