@@ -12,14 +12,7 @@ add_library(bundled_libircclient STATIC
   config.h
   params.h
   session.h
-  colors.c
-  dcc.c
-  errors.c
   libircclient.c
-  portable.c
-  sockets.c
-  ssl.c
-  utils.c
 )
 
 set(IRCCLIENT_LIBRARIES bundled_libircclient PARENT_SCOPE)
