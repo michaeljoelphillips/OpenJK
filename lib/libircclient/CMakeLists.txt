@@ -2,18 +2,22 @@ include_directories(. include/libircclient)
 add_definitions(-DIN_BUILDING_LIBIRC -DENABLE_THREADS -D_REENTRANT)
 
 add_library(bundled_libircclient STATIC
-  include/libircclient/libirc_errors.h
-  include/libircclient/libirc_events.h
-  include/libircclient/libirc_options.h
-  include/libircclient/libirc_rfcnumeric.h
-  include/libircclient/libircclient.h
-  libircclient.c
-  dcc.h
-  config.h
-  params.h
-  session.h
-  libircclient.c
-)
+	include/libircclient/libirc_errors.h
+	include/libircclient/libirc_events.h
+	include/libircclient/libirc_options.h
+	include/libircclient/libirc_rfcnumeric.h
+	include/libircclient/libircclient.h
+	libircclient.c
+	dcc.h
+	config.h
+	params.h
+	session.h
+	libircclient.c
+	)
+
+if (WIN32)
+	link_libraries(ws2_32 wsock32)
+endif()
 
 set(IRCCLIENT_LIBRARIES bundled_libircclient PARENT_SCOPE)
 set(IRCCLIENT_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/lib/libircclient/include PARENT_SCOPE)
