@@ -8,6 +8,18 @@ add_library(bundled_libircclient STATIC
   include/libircclient/libirc_rfcnumeric.h
   include/libircclient/libircclient.h
   libircclient.c
+  dcc.h
+  config.h
+  params.h
+  session.h
+  colors.c
+  dcc.c
+  errors.c
+  libircclient.c
+  portable.c
+  sockets.c
+  ssl.c
+  utils.c
 )
 
 set(IRCCLIENT_LIBRARIES bundled_libircclient PARENT_SCOPE)
