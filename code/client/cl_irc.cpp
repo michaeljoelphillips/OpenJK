@@ -15,6 +15,8 @@ irc_session_t *session;
 
 char *current_channel = (char*) malloc(40 * sizeof(char));
 
+void connect(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
+void numeric(irc_session_s *session, unsigned int event, const char * origin, const char ** params, unsigned int count);
 void join(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
 void part(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
 void channel(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count);
@@ -45,9 +47,11 @@ void CL_InitIRC( void )
   cvar_t *cl_ircPassword = Cvar_Get("cl_ircPassword", "kappa", CVAR_ARCHIVE_ND);
 
   irc_callbacks_t callbacks = {
+    .event_connect = connect,
     .event_join    = join,
     .event_part    = part,
     .event_channel = channel,
+    .event_numeric = numeric,
   };
 
   session = irc_create_session(&callbacks);
@@ -65,6 +69,18 @@ void CL_InitIRC( void )
 
     return;
   }
+}
+
+void connect(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+#ifdef _DEBUG
+  Com_Printf("Connect to IRC Server\n");
+#endif
+}
+
+void numeric(irc_session_s *session, unsigned int event, const char * origin, const char ** params, unsigned int count) {
+#ifdef _DEBUG
+  Com_Printf("Received IRC numeric event\n");
+#endif
 }
 
 /*
