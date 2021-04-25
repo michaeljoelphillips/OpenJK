@@ -290,6 +290,24 @@ void SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, 
 	re.SetColor( NULL );
 }
 
+void SCR_DrawWordWrappedString(int x, int y, const char *string, int length) {
+  int xx = x;
+  int yy = y;
+
+  int string_length = strlen(string);
+
+  for (int i = 1; i <= string_length; i++) {
+    if (i % length == 0) {
+      xx = x;
+      yy += SMALLCHAR_HEIGHT;
+    }
+
+    SCR_DrawSmallChar(xx, yy, string[i - 1]);
+
+    xx += SMALLCHAR_WIDTH;
+  }
+}
+
 /*
 ** SCR_Strlen -- skips color escape codes
 */

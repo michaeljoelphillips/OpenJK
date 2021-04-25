@@ -372,6 +372,7 @@ void	SCR_DrawBigStringColor( int x, int y, const char *s, vec4_t color, qboolean
 void	SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, qboolean forceColor, qboolean noColorEscape );
 void	SCR_DrawBigChar( int x, int y, int ch );
 void	SCR_DrawSmallChar( int x, int y, int ch );
+void	SCR_DrawWordWrappedString(int x, int y, const char *string, int length);
 
 #ifdef JK2_MODE
 void	SCR_PrecacheScreenshot();
