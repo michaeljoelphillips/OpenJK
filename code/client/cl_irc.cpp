@@ -99,7 +99,7 @@ void channel(irc_session_t *session, const char *event, const char *origin, cons
     Cmd_ExecuteString(++message);
   }
 
-  Com_Printf("%s: %s\n", user, --message);
+  CL_AddChatMessage(message);
 }
 
 /*

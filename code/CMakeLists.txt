@@ -108,6 +108,7 @@ if(BuildSPEngine OR BuildJK2SPEngine)
 		"${SPDir}/client/keycodes.h"
 
 		"${SPDir}/client/cl_cgame.cpp"
+		"${SPDir}/client/cl_chat.cpp"
 		"${SPDir}/client/cl_cin.cpp"
 		"${SPDir}/client/cl_console.cpp"
 		"${SPDir}/client/cl_input.cpp"

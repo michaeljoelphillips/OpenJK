@@ -84,6 +84,8 @@ cvar_t	*cl_ircPort;
 cvar_t	*cl_ircUsername;
 cvar_t	*cl_ircPassword;
 
+cvar_t	*cl_showChat;
+
 clientActive_t		cl;
 clientConnection_t	clc;
 clientStatic_t		cls;

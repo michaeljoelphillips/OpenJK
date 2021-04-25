@@ -419,6 +419,12 @@ void CL_IRCRecv( void );
 void CL_IRCSay( void );
 
 //
+// cl_chat.c
+//
+void CL_AddChatMessage( const char* );
+void CL_DrawChat( void );
+
+//
 // cl_ui.c
 //
 void CL_InitUI( void );
