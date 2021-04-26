@@ -11,14 +11,14 @@ const irc_message_t *irc_chat_buffer[IRC_CHAT_BUFFER_SIZE] = { NULL };
 
 /*
 ======================
- Draw IRC on the screen
+ Draw IRC chat on the screen
 
  Writes the contents of `irc_chat_buffer` to a section of the screen in
  descending order.  (Newest messages on the bottom)
 
  Chat messages will not be drawn if:
 
-   * `cl_showChat` is disabled (0)
+   * `cl_ircShowChat` is disabled (0)
    * The game client is not connected to the server
 
 ======================
@@ -29,11 +29,11 @@ void CL_DrawChat( void )
     return;
   }
 
-  cvar_t *cl_showChat = Cvar_Get("cl_showChat", "1", CVAR_ARCHIVE_ND);
+  cvar_t *cl_ircShowChat = Cvar_Get("cl_ircShowChat", "1", CVAR_ARCHIVE_ND);
 
   // Don't render chat if the client is not an active state (cgame has
   // started), or if chat is disabled.
-  if (!cl_showChat->integer || cls.state != CA_ACTIVE) {
+  if (!cl_ircShowChat->integer || cls.state != CA_ACTIVE) {
     return;
   }
 
