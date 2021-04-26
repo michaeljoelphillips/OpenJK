@@ -92,14 +92,19 @@ void numeric(irc_session_s *session, unsigned int event, const char * origin, co
 */
 void channel(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count)
 {
-  const char *user = origin;
+  /*
+   * `origin` contains the fully qualified username, which is comprised of user
+   * and host information delineated by the `!` character.  We only need the
+   * username, which is the first token in the origin string.
+   */
+  const char *user = strtok((char*) origin, "!");
   const char *message = params[1];
 
   if (strncmp(message, "!", 1) == 0) {
     Cmd_ExecuteString(++message);
   }
 
-  CL_AddChatMessage(message);
+  CL_AddChatMessage(user, message);
 }
 
 /*

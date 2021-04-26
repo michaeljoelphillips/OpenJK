@@ -421,7 +421,7 @@ void CL_IRCSay( void );
 //
 // cl_chat.c
 //
-void CL_AddChatMessage( const char* );
+void CL_AddChatMessage( const char*, const char* );
 void CL_DrawChat( void );
 
 //
