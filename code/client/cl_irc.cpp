@@ -101,7 +101,7 @@ void channel(irc_session_t *session, const char *event, const char *origin, cons
   const char *message = params[1];
 
   if (strncmp(message, "!", 1) == 0) {
-    Cmd_ExecuteString(++message);
+    CL_HandleIRCMessage(user, message);
   }
 
   CL_AddChatMessage(user, message);

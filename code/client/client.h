@@ -425,6 +425,12 @@ void CL_AddChatMessage( const char*, const char* );
 void CL_DrawChat( void );
 
 //
+// cl_memes.c
+//
+void CL_HandleIRCMessage( const char*, const char* );
+void CL_TickRestoreCommandQueue( void );
+
+//
 // cl_ui.c
 //
 void CL_InitUI( void );
