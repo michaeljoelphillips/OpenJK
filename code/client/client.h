@@ -428,7 +428,7 @@ void CL_DrawChat( void );
 // cl_memes.c
 //
 void CL_HandleIRCMessage( const char*, const char* );
-void CL_TickRestoreCommandQueue( void );
+void CL_ProcessRestoreCommandQueue( void );
 
 //
 // cl_ui.c

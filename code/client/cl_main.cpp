@@ -887,7 +887,7 @@ void CL_Frame ( int msec,float fractionMsec ) {
 	Con_RunConsole();
 
 	CL_IRCRecv();
-	CL_TickRestoreCommandQueue();
+	CL_ProcessRestoreCommandQueue();
 
 	cls.framecount++;
 }
