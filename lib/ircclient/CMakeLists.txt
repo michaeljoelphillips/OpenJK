@@ -1,5 +1,5 @@
 include_directories(. include/)
-add_definitions(-DIN_BUILDING_LIBIRC -DENABLE_THREADS -D_REENTRANT)
+add_definitions(-DIN_BUILDING_LIBIRC)
 
 add_library(bundled_libircclient STATIC
 	include/libirc_errors.h

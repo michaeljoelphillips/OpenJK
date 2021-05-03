@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef _WIN32
+  #include <winsock2.h>
+
+  static WSADATA winsockdata;
+#endif
+
 #ifdef USE_INTERNAL_IRCCLIENT
 #include "ircclient/libircclient.h"
 #else
@@ -41,6 +47,14 @@ void channel(irc_session_t *session, const char *event, const char *origin, cons
 */
 void CL_InitIRC( void )
 {
+#ifdef _WIN32
+  if(WSAStartup(MAKEWORD(2, 2), &winsockdata)) {
+    Com_Printf("Winsock initialization failed, cannot start IRC client");
+
+    return;
+  }
+#endif
+
   cvar_t *cl_ircHost = Cvar_Get("cl_ircHost", "irc.chat.twitch.tv", CVAR_ARCHIVE_ND);
   cvar_t *cl_ircPort = Cvar_Get("cl_ircPort", "6667", CVAR_ARCHIVE_ND);
   cvar_t *cl_ircUsername = Cvar_Get("cl_ircUsername", "justinfan14970", CVAR_ARCHIVE_ND);
@@ -63,7 +77,7 @@ void CL_InitIRC( void )
   }
 
   if (irc_connect(session, cl_ircHost->string, cl_ircPort->integer, cl_ircPassword->string, cl_ircUsername->string, cl_ircUsername->string, NULL)) {
-    Com_Printf("Failed to connect to IRC server %s:%d\n", cl_ircHost->string, cl_ircPort->integer);
+    Com_Printf("Failed to connect to IRC server %s:%d with error %s\n", cl_ircHost->string, cl_ircPort->integer, irc_strerror(irc_errno(session)));
 
     irc_destroy_session(session);
 
