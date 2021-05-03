@@ -32,18 +32,22 @@
 
 	#define IS_SOCKET_ERROR(a)	((a)==SOCKET_ERROR)
 
-#if !defined(EWOULDBLOCK)
+/*
+ * VSC overrides these definitions and are not POSIX compliant.  JKA requires
+ * VSC, therefore we must redefine these constants.
+ *
+ * Since sockets are not used for the singler player game, this should not
+ * create issues with the sp build.
+ */
+	#undef EWOULDBLOCK
+	#undef EINPROGRESS
+	#undef EINTR
+	#undef EAGAIN
+
 	#define EWOULDBLOCK		WSAEWOULDBLOCK
-#endif
-#if !defined(EINPROGRESS)
 	#define EINPROGRESS		WSAEINPROGRESS
-#endif
-#if !defined(EINTR)
 	#define EINTR			WSAEINTR
-#endif
-#if !defined(EAGAIN)
 	#define EAGAIN			EWOULDBLOCK
-#endif
 
 	typedef SOCKET			socket_t;
 
