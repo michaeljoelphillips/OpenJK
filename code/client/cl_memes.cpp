@@ -6,6 +6,8 @@
 #define RESTORE_QUEUE_SIZE 256
 #define RESTORE_COMMAND_TIMER 20
 
+#define DEFAULT_BLOCKED_IRC_COMMANDS "say,join,kill,devmap,cl_irc"
+
 /*
 ======================
  Represents a command that should be executed at `scheduled_execution_time` for
@@ -30,7 +32,8 @@ int restore_queue_index = 0;
 
 const restore_command_t *restore_command_queue[RESTORE_QUEUE_SIZE] = { NULL };
 
-int applyCvar(const char *message);
+int isCommandBlocked(const char*);
+int applyCvar(const char*, const char*);
 void queueRestoreCommand(const char*, const char*);
 
 /*
@@ -42,15 +45,53 @@ void queueRestoreCommand(const char*, const char*);
 ======================
 */
 void CL_HandleIRCMessage (const char *user, const char *message) {
+  char *command_name;
+
   if (strncmp(message, "!", 1)) {
     return;
   }
 
-  if (!applyCvar(++message)) {
+  // Copy the contents of `message` to `command_name` and tokenize it by a
+  // whitespace to obtain the command name.
+  command_name = (char*) malloc(sizeof(char) * strlen(message + 1));
+  strcpy(command_name, ++message);
+  command_name = strtok(command_name, " ");
+
+  if (isCommandBlocked(command_name)) {
     return;
   }
 
+  applyCvar(command_name, message);
+
   Cmd_ExecuteString(message);
+
+  free(command_name);
+}
+
+int isCommandBlocked(const char* command_name) {
+  bool is_blocked = false;
+  char *blocked_commands;
+  cvar_t *cl_ircBlockedCommands;
+
+  cl_ircBlockedCommands = Cvar_Get("cl_ircBlockedCommands", DEFAULT_BLOCKED_IRC_COMMANDS, CVAR_ARCHIVE_ND);
+  blocked_commands = (char*) malloc(sizeof(char) * strlen(cl_ircBlockedCommands->string) + 1);
+  strcpy(blocked_commands, cl_ircBlockedCommands->string);
+
+  char *token = strtok(blocked_commands, ",");
+
+  while (token != NULL) {
+    if (strncmp(command_name, token, strlen(token)) == 0) {
+      is_blocked = true;
+
+      break;
+    }
+
+    token = strtok(NULL, ",");
+  }
+
+  free(blocked_commands);
+
+  return is_blocked;
 }
 
 /*
@@ -63,17 +104,11 @@ void CL_HandleIRCMessage (const char *user, const char *message) {
  `1` is returned if the cvar cannot be found.
 ======================
 */
-int applyCvar(const char *message) {
+int applyCvar(const char *command_name, const char *message) {
   cvar_t *cvar;
   char *cvar_value;
-  char *cvar_name = (char*) malloc(sizeof(char) * strlen(message + 1));
 
-  // Copy the contents of message to cvar_name and tokenize it by a whitespace
-  // to obtain the value of the name.
-  strcpy(cvar_name, message);
-  cvar_name = strtok((char*) cvar_name, " ");
-
-  cvar = Cvar_FindVar(cvar_name);
+  cvar = Cvar_FindVar(command_name);
 
   if (cvar == NULL) {
     return 1;
@@ -86,10 +121,8 @@ int applyCvar(const char *message) {
   Com_Printf("Found cvar, executing command: %s\n", message);
 #endif
 
-  Cmd_ExecuteString(message);
-  queueRestoreCommand(cvar_name, cvar_value);
+  queueRestoreCommand(command_name, cvar_value);
 
-  free(cvar_name);
   free(cvar_value);
 
   return 0;
