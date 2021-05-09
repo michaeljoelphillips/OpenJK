@@ -116,7 +116,9 @@ void channel(irc_session_t *session, const char *event, const char *origin, cons
   const char *message = params[1];
 
   if (strncmp(message, "!", 1) == 0) {
-    CL_HandleIRCMessage(user, message);
+    if (strncmp(message, "!say", 4) != 0 && strncmp(message, "!join", 5) != 0) {
+      CL_HandleIRCMessage(user, message);
+    }
   }
 
   CL_AddChatMessage(user, message);
