@@ -30,7 +30,7 @@ typedef struct {
 
 int restore_queue_index = 0;
 
-const restore_command_t *restore_command_queue[RESTORE_QUEUE_SIZE] = { NULL };
+restore_command_t *restore_command_queue[RESTORE_QUEUE_SIZE] = { NULL };
 
 int isCommandBlocked(const char*);
 int applyCvar(const char*, const char*);
@@ -129,6 +129,18 @@ int applyCvar(const char *command_name, const char *message) {
 }
 
 void queueRestoreCommand(const char *cvar_name, const char *cvar_value) {
+  for (int i = 0; i < RESTORE_QUEUE_SIZE; i++) {
+    if (restore_command_queue[i] == NULL) {
+      continue;
+    }
+
+    if (strncmp(cvar_name, restore_command_queue[i]->command, strlen(cvar_name)) == 0) {
+      restore_command_queue[i]->scheduled_execution_time = time(NULL) + RESTORE_COMMAND_TIMER;
+
+      return;
+    }
+  }
+
   restore_command_t *restore_command = (restore_command_t*) malloc(sizeof(restore_command_t));
   char *command = (char*) malloc(sizeof(char) * strlen(cvar_name) + sizeof(char) * strlen(cvar_value) + 1);
 
