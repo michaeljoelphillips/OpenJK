@@ -48,6 +48,8 @@ void channel(irc_session_t *session, const char *event, const char *origin, cons
 */
 void CL_InitIRC( void )
 {
+  Cvar_Set("helpUsObi", "1");
+
 #ifdef _WIN32
   if(WSAStartup(MAKEWORD(2, 2), &winsockdata)) {
     Com_Printf("Winsock initialization failed, cannot start IRC client");
