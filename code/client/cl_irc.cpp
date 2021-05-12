@@ -202,6 +202,11 @@ void CL_IRCRecv( void )
   irc_process_select_descriptors(session, &in_set, &out_set);
 }
 
+void CL_IRCSay(const char *message)
+{
+  irc_cmd_msg(session, current_channel, message);
+}
+
 /*
 ======================
 Send messages to the connection IRC channel from the console:
@@ -210,13 +215,13 @@ Send messages to the connection IRC channel from the console:
 
 ======================
 */
-void CL_IRCSay( void )
+void CL_IRCSayCmd( void )
 {
   if (Cmd_Argc() < 1) {
     return;
   }
 
-  irc_cmd_msg(session, current_channel, Cmd_ArgsFrom(1));
+  CL_IRCSay(Cmd_ArgsFrom(1));
 }
 
 /*
