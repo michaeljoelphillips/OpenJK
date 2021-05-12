@@ -416,7 +416,10 @@ void CL_FirstSnapshot( void );
 void CL_InitIRC( void );
 void CL_IRCJoin( void );
 void CL_IRCRecv( void );
-void CL_IRCSay( void );
+void CL_IRCSay( const char* );
+void CL_IRCSayCmd( void );
+void CL_IRCBlockCommand( void );
+void CL_IRCUnblockCommand( void );
 
 //
 // cl_chat.c

@@ -1329,8 +1329,10 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("uimenu", CL_GenericMenu_f);
 	Cmd_AddCommand ("datapad", CL_DataPad_f);
 	Cmd_AddCommand ("endscreendissolve", CL_EndScreenDissolve_f);
-  Cmd_AddCommand ("say", CL_IRCSay);
+  Cmd_AddCommand ("say", CL_IRCSayCmd);
   Cmd_AddCommand ("join", CL_IRCJoin);
+  Cmd_AddCommand ("block", CL_IRCBlockCommand);
+  Cmd_AddCommand ("unblock", CL_IRCUnblockCommand);
 
 	CL_InitRef();
 
