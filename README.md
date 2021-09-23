@@ -1,99 +1,96 @@
-# OpenJK
+# Meme Academy
 
-OpenJK is an effort by the JACoders group to maintain and improve the game engines on which the Jedi Academy (JA) and Jedi Outcast (JO) games run on, while maintaining *full backwards compatibility* with the existing games. *This project does not attempt to rebalance or otherwise modify core gameplay*.
+An OpenJK build for the JKA speedrunning community that adds support for
+in-game Twitch chat.
 
-Our aims are to:
-* Improve the stability of the engine by fixing bugs and improving performance.
-* Provide a clean base from which new JO and JA code modifications can be made.
-* Make available this engine to more operating systems. To date, we have ports on Linux and macOS.
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=g9HrPJq-kow" target="_blank">
+    <img src="http://img.youtube.com/vi/g9HrPJq-kow/0.jpg" border="10"/>
+</a>
 
-Currently, the most stable portion of this project is the Jedi Academy multiplayer code, with the single player code in a reasonable state.
+## Disclaimer
 
-Rough support for Jedi Outcast single player is also available, however this should be considered heavily work in progress. This is not currently actively worked on or tested. OpenJK does not have Jedi Outcast multiplayer support.
+This build will allow users in your Twitch chat to execute commands against the
+JKA client console.  This is potentially dangerous and you should first
+understand the risks before using.
 
-Please use discretion when making issue requests on GitHub. The [JKHub sub-forum](http://jkhub.org/forum/51-discussion/) is a better place for support queries, discussions, and feature requests.
+## Connecting to Twitch
 
-<a href="https://discord.gg/dPNCfeQ"><img src="https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&longCache=true&style=flat" /></a>
-[![Forum](https://img.shields.io/badge/forum-JKHub.org%20OpenJK-brightgreen.svg)](http://jkhub.org/forum/51-discussion/)
+Connection information for the IRC server is stored and read as cvars.  The
+cvars for connecting are as follows:
 
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/1153/badge.svg)](https://scan.coverity.com/projects/1153)
+```
+  cl_ircHost
+  cl_ircPort
+  cl_ircUsername
+  cl_ircPassword
+```
 
-## License
+If custom cvars are not provided, the client will connect to
+"irc.chat.twitch.tv" as an anonymous user.
 
-OpenJK is licensed under GPLv2 as free software. You are free to use, modify and redistribute OpenJK following the terms in LICENSE.txt.
+If the connection fails, the client must be restarted.
 
+## Twitch User Commands
 
-## For players
+Once connected to a channel, users in Twitch chat can can invoke console
+commands with the `!` prefix:
+```
+!r_showtris 1
+!saber sith_sword
+```
 
-To install OpenJK, you will first need Jedi Academy installed. If you don't already own the game you can buy it from online stores such as [Steam](http://store.steampowered.com/app/6020/), [Amazon](http://www.amazon.com/Star-Wars-Jedi-Knight-Academy-Pc/dp/B0000A2MCN) or [GOG](https://www.gog.com/game/star_wars_jedi_knight_jedi_academy).
+All commands are in the exact format as they are accepted in the game console.
 
-Installing and running OpenJK:
+The following commands are always blocked:
+```
+say
+join
+kill
+devmap
+cl_irc*
+```
 
-1. [Download the latest build](http://builds.openjk.org) for your operating system.
-2. Extract the contents of the file into the Jedi Academy `GameData/` folder. For Steam users, this will be in `<Steam Folder>/steamapps/common/Jedi Academy/GameData`.
-3. Run `openjk.x86.exe` (Windows), `openjk.i386` (Linux 32-bit), `openjk.x86_64` (Linux 64-bit) or the `OpenJK` app bundle (macOS), depending on your operating system.
+Any variables that are changed will be restored to the original value after 20
+seconds.
 
+## Custom Commands
 
-**Linux Instructions**
+### `say`
 
-If you do not have a windows partition and need to download the game base.
+Sends a message to the current channel:
+```
+say Hey, what's going on?
+```
 
-1. Download  and Install SteamCMD [SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD#Linux) .
-2. Set the download path using steamCMD, force_install_dir <path> .
-3. Using SteamCMD Set the platform to windows to download any windows game on steam. @sSteamCmdForcePlatformType "windows"
-4. Using SteamCMD download the game,  app_update 6020.
-5. [Download the latest build](http://builds.openjk.org) for your operating system.
-6. Extract the contents of the file into the Jedi Academy `GameData/` folder. For Steam users, this will be in `<Steam Folder>/steamapps/common/Jedi Academy/GameData`.
+### `join`
 
+Joins a channel on the IRC server:
+```
+join #your_solution
+```
 
-**macOS Instructions**
+### `block`/`unblock`
 
-If you have the Mac App Store Version of Jedi Academy, follow these steps to get OpenJK runnning under macOS:
+Blocks/unblocks a command from being executed by chat:
+```
+block spawn
+unblock spawn
+```
 
-1. Install [Homebrew](http://brew.sh/) if you don't have it.
-2. Open the Terminal app, and enter the command `brew install sdl2`.
-3. Extract the contents of the OpenJK DMG ([Download the latest build](http://builds.openjk.org)) into the game directory `/Applications/Star Wars Jedi Knight: Jedi Academy.app/Contents/`
-4. Run `OpenJK.app` or `OpenJK SP.app` 
-5. Savegames, Config Files and Log Files are stored in `/Users/<USER>/Library/Application Support/OpenJK/`
+## Custom Variables
 
+### `cl_ircShowChat`
 
-## For Developers
+Draws Twitch chat within the game client:
+```
+cl_ircShowChat 1
+cl_ircShowChat 0
+```
 
+## Credits
 
-### Building OpenJK
-
-* [Compilation guide](https://github.com/JACoders/OpenJK/wiki/Compilation-guide)
-* [Debugging guide](https://github.com/JACoders/OpenJK/wiki/Debugging)
-
-
-### Contributing to OpenJK
-
-* [Fork](https://github.com/JACoders/OpenJK/fork) the project on GitHub
-* Create a new branch and make your changes
-* Send a [pull request](https://help.github.com/articles/creating-a-pull-request) to upstream (JACoders/OpenJK)
-
-
-### Using OpenJK as a base for a new mod
-
-* [Fork](https://github.com/JACoders/OpenJK/fork) the project on GitHub
-* Change the GAMEVERSION define in codemp/game/g_local.h from "OpenJK" to your project name
-* If you make a nice change, please consider back-porting to upstream via pull request as described above. This is so everyone benefits without having to reinvent the wheel for every project.
-
-
-## Maintainers (in alphabetical order)
-
-* Ensiform
-* Razish
-* Xycaleth
-
-
-## Significant contributors (in alphabetical order)
-
-* eezstreet
-* exidl
-* ImperatorPrime
-* mrwonko
-* redsaurus
-* Scooper
-* Sil
-* smcv
+* [OpenJK](https://github.com/JACoders/OpenJK) for keeping the OSS release of
+  this game alive
+* [YS](https://github.com/ryanjphillips) for the teaser video, testing, and live-streaming the debut
+* [Sphere](https://github.com/kugelrund) for [Speed-Academy](https://github.com/kugelrund/Speed-Academy)
+* The JKA Speedrunning community for being awesome
