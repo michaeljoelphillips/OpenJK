@@ -1,4 +1,4 @@
-# Meme Academy
+# JKA Crowd Control
 
 An OpenJK build for the JKA speedrunning community that adds support for
 in-game Twitch chat.
